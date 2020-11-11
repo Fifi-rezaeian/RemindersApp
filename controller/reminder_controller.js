@@ -40,17 +40,55 @@ let remindersController = {
   // Show the Edit Reminder Page
   edit: (req, res) => {
     // ⭐️ your implementation here ⭐️
+    let reminderToFind = req.params.id;
+    let searchResult = database.cindy.reminders.find(function (reminder) {
+      return reminder.id == reminderToFind;
+    })
 
+    res.render('reminder/edit', {
+      reminderItem: searchResult, 
+      titleVar: searchResult.title, 
+      descVar: searchResult.description, 
+      completeVar: searchResult.completed
+    })
   },
 
   // Edit the Reminder
   update: (req, res) => {
     // ⭐️ your implementation here ⭐️
+
+    const userEvents = database.cindy.reminders
+    let reminderToFind = req.params.id;
+
+    for (let i = 0; i < userEvents.length; i++) {
+      if (reminderToFind == userEvents[i].id) {
+        userEvents[i].title = req.body.title;
+        userEvents[i].description = req.body.description;
+        if (req.body.completed == 'true') {
+          userEvents[i].completed = true;
+        } else {
+          userEvents[i].completed = false;
+        }
+        
+      }
+    }
+
+    res.redirect('/reminders');
   },
 
   // Delete the Reminder
   delete: (req, res) => {
     // ⭐️ your implementation here ⭐️
+
+    const userEvents = database.cindy.reminders
+    let reminderToFind = req.params.id;
+
+    for (let i = 0; i < userEvents.length; i++) {
+      if (reminderToFind == userEvents[i].id) {
+        userEvents.splice(i, 1)
+      }
+    }
+    res.redirect('/reminders')
   }
 }
 
